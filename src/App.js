@@ -11,13 +11,13 @@ function App() {
     api.get('repositories').then(response => {
       setRepositories(response.data);
     });
-  }, [repositories]);
+  }, []);
   
   async function handleAddRepository() {
     const response = await api.post('repositories', {
-      url: "http://github.com/teste",
-      title: `Novo repositório ${Date.now()}`,        
-      techs: ["React", "Node.js"]
+      url: "https://github.com/josepholiveira",
+      title: "Desafio ReactJS",
+      techs: ["React", "Node.js"],
     });
 
     const repository = response.data;
@@ -26,9 +26,19 @@ function App() {
   }
 
   async function handleRemoveRepository(id) {
+    console.log(id);
     const response = await api.delete(`repositories/${id}`);
-      
-    setRepositories(repositories);
+     
+    const repoIndex = repositories.findIndex(repo => repo.id === id);
+  
+    if (repoIndex < 0) {
+      return response.status(400).json( {error: 'Repository not found.'});
+  }
+  console.log(repoIndex);
+  repositories.splice(repoIndex, 1);
+
+
+    setRepositories([...repositories]);    
   }
 
   return (
